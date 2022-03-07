@@ -12,7 +12,8 @@ import SettingsScreen from "./containers/SettingsScreen";
 import AdventureScreen from "./containers/AdventureScreen";
 import CuriosityScreen from "./containers/CuriosityScreen";
 import SplashScreen from "./containers/SplashScreen";
-import GetPosition from "./components/GetPosition";
+// import GetPosition from "./components/GetPosition";
+import * as Location from "expo-location";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -20,7 +21,8 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [userToken, setUserToken] = useState(null);
-
+  const [seconds, setSeconds] = useState(0);
+  const [countdown, setCountdown] = useState(6000);
   const [coords, setCoords] = useState();
 
   const setToken = async (token) => {
@@ -33,9 +35,71 @@ export default function App() {
     setUserToken(token);
   };
 
-  // GetPosition();
+  //compte a rebour
+  useEffect(() => {
+    const rebour = setInterval(() => {
+      setSeconds((seconds) => seconds + 1);
+      setCountdown((countdown) => countdown - 1);
 
-  console.log("appjs coords==>", GetPosition());
+      console.log(seconds);
+      console.log(countdown);
+
+      if (seconds === 6000) {
+        setCountdown(6000);
+        setSeconds(0);
+        console.log("new question");
+      }
+    }, 1000);
+  }, []);
+
+  //déclenche la requete  GetQuestion toute les X minutes
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setCountdown(6000);
+
+  //     console.log("countdown =>", countdown);
+
+  //     if (countdown === 0) {
+  //       setCountdown(6000);
+
+  //       //appeller la requete GetQuestion
+  //     }
+  //   }, 6000);
+  // }, []);
+
+  //récupérer la position du téléphone.........................................................
+
+  useEffect(() => {
+    const askPermission = async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+
+      console.log("status==>", status);
+
+      if (status === "granted") {
+        let location = await Location.getCurrentPositionAsync({});
+
+        const obj = {
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+        };
+
+        console.log("coords==>", obj);
+
+        setCoords(obj);
+
+        // setCoords(obj);
+        // return obj;
+      } else {
+        setError(true);
+      }
+
+      setIsLoading(false);
+    };
+
+    askPermission();
+  }, []);
+
+  //...........................................................................................
 
   useEffect(() => {
     // Fetch the token from storage then navigate to our appropriate place
@@ -123,6 +187,7 @@ export default function App() {
                           <AdventureScreen
                             setToken={setToken}
                             coords={coords}
+                            seconds={seconds}
                           />
                         )}
                       </Stack.Screen>

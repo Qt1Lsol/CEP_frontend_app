@@ -10,15 +10,27 @@ import {
 
 import React, { useState, useEffect } from "react";
 import Interval from "../components/Interval";
-import GetPosition from "../components/GetPosition";
 
-const AdventureScreen = () => {
+function seconds_to_days_hours_mins_secs_str(seconds) {
+  //day, h, m and s
+  var days = Math.floor(seconds / (24 * 60 * 60));
+  seconds -= days * (24 * 60 * 60);
+  var hours = Math.floor(seconds / (60 * 60));
+  seconds -= hours * (60 * 60);
+  var minutes = Math.floor(seconds / 60);
+  seconds -= minutes * 60;
+  return (
+    (0 < days ? days + " day, " : "") + hours + ":" + minutes + ":" + seconds
+  );
+}
+
+const AdventureScreen = (props) => {
   const navigation = useNavigation();
   //   const [coords, setCoords] = useState();
 
   console.log("Adventure screen OK");
 
-  console.log("Return coords adventure ==>", coords);
+  console.log("Return coords adventure ==>", props.coords);
 
   return (
     <ImageBackground
@@ -27,7 +39,10 @@ const AdventureScreen = () => {
     >
       <View>
         <Text>Welcome to adventure screen</Text>
-        <Interval />
+        {/* <Interval /> */}
+        <Text>{seconds_to_days_hours_mins_secs_str(props.seconds)}</Text>
+        <Text>{props.coords.latitude}</Text>
+        <Text>{props.coords.longitude}</Text>
         {/* <Image
         source={require("../assets/adaptive-icon.png")}
         style={styles.cover}
