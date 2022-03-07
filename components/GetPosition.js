@@ -6,7 +6,7 @@ import * as Location from "expo-location";
 const GetPosition = () => {
   const [error, setError] = useState();
   const [isLoading, setIsLoading] = useState(true);
-  const [coords, setCoords] = useState();
+  //   const [coords, setCoords] = useState();
   console.log("GetPosition OK");
 
   useEffect(() => {
@@ -25,7 +25,8 @@ const GetPosition = () => {
 
         console.log("coords==>", obj);
 
-        setCoords(obj);
+        // setCoords(obj);
+        return obj;
       } else {
         setError(true);
       }
@@ -34,8 +35,6 @@ const GetPosition = () => {
     };
 
     askPermission();
-
-    return obj;
   }, []);
 };
 
