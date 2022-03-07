@@ -12,6 +12,7 @@ import SettingsScreen from "./containers/SettingsScreen";
 import AdventureScreen from "./containers/AdventureScreen";
 import CuriosityScreen from "./containers/CuriosityScreen";
 import SplashScreen from "./containers/SplashScreen";
+import GetPosition from "./components/GetPosition";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -32,9 +33,9 @@ export default function App() {
     setUserToken(token);
   };
 
-  setCoords(GetPosition());
+  // GetPosition();
 
-  console.log("appjs coords==>", coords);
+  console.log("appjs coords==>", GetPosition());
 
   useEffect(() => {
     // Fetch the token from storage then navigate to our appropriate place

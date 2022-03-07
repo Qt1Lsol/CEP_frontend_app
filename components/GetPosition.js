@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, Button, Text, View } from "react-native";
 import * as Location from "expo-location";
 
-const GetPosition = (props) => {
+const GetPosition = () => {
   const [error, setError] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [coords, setCoords] = useState();
