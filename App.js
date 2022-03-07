@@ -20,6 +20,8 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [userToken, setUserToken] = useState(null);
 
+  const [coords, setCoords] = useState();
+
   const setToken = async (token) => {
     if (token) {
       await AsyncStorage.setItem("userToken", token);
@@ -29,6 +31,10 @@ export default function App() {
 
     setUserToken(token);
   };
+
+  setCoords(GetPosition());
+
+  console.log("appjs coords==>", coords);
 
   useEffect(() => {
     // Fetch the token from storage then navigate to our appropriate place
@@ -112,7 +118,12 @@ export default function App() {
                           title: "Adventure",
                         }}
                       >
-                        {() => <AdventureScreen />}
+                        {() => (
+                          <AdventureScreen
+                            setToken={setToken}
+                            coords={coords}
+                          />
+                        )}
                       </Stack.Screen>
 
                       <Stack.Screen

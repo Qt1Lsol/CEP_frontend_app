@@ -12,13 +12,11 @@ import React, { useState, useEffect } from "react";
 import Interval from "../components/Interval";
 import GetPosition from "../components/GetPosition";
 
-export default function AdventureScreen() {
+const AdventureScreen = () => {
   const navigation = useNavigation();
-  const [coords, setCoords] = useState();
+  //   const [coords, setCoords] = useState();
 
   console.log("Adventure screen OK");
-
-  setCoords(GetPosition());
 
   console.log("Return coords adventure ==>", coords);
 
@@ -51,7 +49,9 @@ export default function AdventureScreen() {
       </View>
     </ImageBackground>
   );
-}
+};
+
+export default AdventureScreen;
 
 const styles = StyleSheet.create({
   cover: { height: 300, width: 200, marginTop: 100 },
