@@ -13,6 +13,8 @@ const GetPosition = (props) => {
     const askPermission = async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
 
+      console.log("status==>", status);
+
       if (status === "granted") {
         let location = await Location.getCurrentPositionAsync({});
 
