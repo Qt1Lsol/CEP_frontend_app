@@ -7,6 +7,7 @@ import {
   TextInput,
 } from "react-native";
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 import DateTimePicker from "@react-native-community/datetimepicker";
 
@@ -44,15 +45,18 @@ export default function SignUpScreen({ setUserToken }) {
     console.log("birthdate==>", date);
 
     try {
-      event.preventDefault();
       const response = await axios.post("http://localhost:4000/user/signup", {
-        email: email,
-        birthdate: date,
-        password: password,
-        confirmPassword: confirmPassword,
+        // email: email,
+        // birthdate: date,
+        // password: password,
+        // confirmPassword: confirmPassword,
+        email: "testeee@test.com",
+        birthdate: "",
+        password: "test",
+        confirmPassword: "test",
       });
 
-      console.log(response);
+      // console.log(response);
 
       if (response.data.token) {
         setUserToken(response.data.token);
@@ -61,10 +65,10 @@ export default function SignUpScreen({ setUserToken }) {
         alert("Une erreur est survenue, veuillez réssayer.");
       }
     } catch (error) {
-      if (error.response.status === 409) {
-        setErrorMessage("Cet email a déjà un compte chez nous !");
-      }
-      console.log(error.message);
+      // if (error.response.status === 409) {
+      //   setErrorMessage("Cet email a déjà un compte chez nous !");
+      // }
+      console.log("catch=>", error.message);
     }
   };
 
@@ -85,7 +89,6 @@ export default function SignUpScreen({ setUserToken }) {
           placeholder="date de naissance"
           onPressIn={showDatepicker}
           value={date.toDateString()}
-          r
         />
 
         <View>
