@@ -7,8 +7,10 @@ import {
   TextInput,
 } from "react-native";
 import React, { useState, useEffect } from "react";
-import DatePickerApp from "../components/DatePicker";
+// import DatePicker from "../components/DatePicker";
 // import { useNavigate } from "react-router-dom";
+
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 export default function SignUpScreen({ setUserToken }) {
   console.log("SignUpScreen OK");
@@ -18,6 +20,30 @@ export default function SignUpScreen({ setUserToken }) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
+
+  //datepicker
+  const [date, setDate] = useState(new Date(1598051730000));
+  const [mode, setMode] = useState("date");
+  const [show, setShow] = useState(false);
+
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShow(Platform.OS === "ios");
+    setDate(currentDate);
+  };
+
+  const showMode = (currentMode) => {
+    setShow(true);
+    setMode(currentMode);
+  };
+
+  const showDatepicker = () => {
+    showMode("date");
+  };
+
+  // const showTimepicker = () => {
+  //   showMode("time");
+  // };
 
   // const navigate = useNavigate();
 
@@ -58,7 +84,33 @@ export default function SignUpScreen({ setUserToken }) {
           }}
         />
 
-        <DatePickerApp />
+        <Text>Date de naissance :</Text>
+        <TextInput
+          placeholder={date}
+          onPressIn={showDatepicker}
+          value={date}
+
+          // onChange={(event) => {
+          //   setEmail(event.target.value);
+          // }}
+        />
+
+        <View>
+          {/* <View>
+            <Button onPress={showDatepicker} title="Show date picker!" />
+          </View> */}
+
+          {show && (
+            <DateTimePicker
+              testID="dateTimePicker"
+              value={date}
+              mode={mode}
+              is24Hour={true}
+              display="default"
+              onChange={onChange}
+            />
+          )}
+        </View>
 
         <Text>Mot de passe : </Text>
         <TextInput

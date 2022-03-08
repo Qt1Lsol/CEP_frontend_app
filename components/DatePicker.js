@@ -1,40 +1,49 @@
-import React, { Component } from "react";
-import DatePicker from "react-native-datepicker";
+import React, { useState } from "react";
+import { View, Button, Platform } from "react-native";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
-export default class MyDatePicker extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { date: "2016-05-15" };
-  }
+export const DatePicker = () => {
+  const [date, setDate] = useState(new Date(1598051730000));
+  const [mode, setMode] = useState("date");
+  const [show, setShow] = useState(false);
 
-  render() {
-    return (
-      <DatePicker
-        style={{ width: 200 }}
-        date={this.state.date}
-        mode="date"
-        placeholder="select date"
-        format="YYYY-MM-DD"
-        minDate="2016-05-01"
-        maxDate="2016-06-01"
-        confirmBtnText="Confirm"
-        cancelBtnText="Cancel"
-        customStyles={{
-          dateIcon: {
-            position: "absolute",
-            left: 0,
-            top: 4,
-            marginLeft: 0,
-          },
-          dateInput: {
-            marginLeft: 36,
-          },
-          // ... You can check the source to find the other keys.
-        }}
-        onDateChange={(date) => {
-          this.setState({ date: date });
-        }}
-      />
-    );
-  }
-}
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShow(Platform.OS === "ios");
+    setDate(currentDate);
+  };
+
+  const showMode = (currentMode) => {
+    setShow(true);
+    setMode(currentMode);
+  };
+
+  const showDatepicker = () => {
+    showMode("date");
+  };
+
+  const showTimepicker = () => {
+    showMode("time");
+  };
+
+  return (
+    <View>
+      <View>
+        <Button onPress={showDatepicker} title="Show date picker!" />
+      </View>
+      <View>
+        <Button onPress={showTimepicker} title="Show time picker!" />
+      </View>
+      {show && (
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={date}
+          mode={mode}
+          is24Hour={true}
+          display="default"
+          onChange={onChange}
+        />
+      )}
+    </View>
+  );
+};
