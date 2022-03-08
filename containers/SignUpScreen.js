@@ -7,8 +7,6 @@ import {
   TextInput,
 } from "react-native";
 import React, { useState, useEffect } from "react";
-// import DatePicker from "../components/DatePicker";
-// import { useNavigate } from "react-router-dom";
 
 import DateTimePicker from "@react-native-community/datetimepicker";
 
@@ -16,7 +14,6 @@ export default function SignUpScreen({ setUserToken }) {
   console.log("SignUpScreen OK");
 
   const [email, setEmail] = useState("");
-  // const [date, setDate] = useState("09-10-2021");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
@@ -41,24 +38,22 @@ export default function SignUpScreen({ setUserToken }) {
     showMode("date");
   };
 
-  // const showTimepicker = () => {
-  //   showMode("time");
-  // };
-
   // const navigate = useNavigate();
 
   const submitSignUp = async (event) => {
+    console.log("birthdate==>", date);
+
     try {
       event.preventDefault();
-      const response = await axios.post(
-        "http://localhost:4000/question/user/signup",
-        {
-          email: email,
-          birthdate: birthdate,
-          password: password,
-          confirmPassword: confirmPassword,
-        }
-      );
+      const response = await axios.post("http://localhost:4000/user/signup", {
+        email: email,
+        birthdate: date,
+        password: password,
+        confirmPassword: confirmPassword,
+      });
+
+      console.log(response);
+
       if (response.data.token) {
         setUserToken(response.data.token);
         // navigate("/question");
@@ -85,14 +80,12 @@ export default function SignUpScreen({ setUserToken }) {
         />
 
         <Text>Date de naissance :</Text>
-        <TextInput
-          placeholder={date}
-          onPressIn={showDatepicker}
-          value={date}
 
-          // onChange={(event) => {
-          //   setEmail(event.target.value);
-          // }}
+        <TextInput
+          placeholder="date de naissance"
+          onPressIn={showDatepicker}
+          value={date.toDateString()}
+          r
         />
 
         <View>
