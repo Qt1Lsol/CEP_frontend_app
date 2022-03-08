@@ -2,31 +2,21 @@ import React, { useState, useEffect } from "react";
 // import { useNavigation } from "@react-navigation/core";
 import { StyleSheet, Button, Text, View } from "react-native";
 import * as Location from "expo-location";
-
-function seconds_to_days_hours_mins_secs_str(seconds) {
-  //day, h, m and s
-  var days = Math.floor(seconds / (24 * 60 * 60));
-  seconds -= days * (24 * 60 * 60);
-  var hours = Math.floor(seconds / (60 * 60));
-  seconds -= hours * (60 * 60);
-  var minutes = Math.floor(seconds / 60);
-  seconds -= minutes * 60;
-  return (
-    (0 < days ? days + " day, " : "") + hours + ":" + minutes + ":" + seconds
-  );
-}
+import TimeFormat from "./TimeFormat";
 
 const Interval = () => {
-  const [seconds, setSeconds] = useState(0);
-  const [countdown, setcountdown] = useState(300);
+  const [compteur, setCompteur] = useState();
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setSeconds((seconds) => seconds + 1);
-      setcountdown((countdown) => countdown - 1);
+    let countdown = 6;
 
-      if (countdown === 0) {
-        //appeller la requeste question
+    const interval = setInterval(() => {
+      countdown--;
+      setCompteur(countdown);
+
+      if (countdown === -1) {
+        countdown = 6;
+        setCompteur(countdown);
       }
     }, 1000);
 
@@ -36,8 +26,7 @@ const Interval = () => {
   return (
     <div className="App">
       <header className="App-header">
-        {seconds_to_days_hours_mins_secs_str(countdown)} before the next
-        question.
+        {TimeFormat(compteur)} before the next question.
       </header>
     </div>
   );

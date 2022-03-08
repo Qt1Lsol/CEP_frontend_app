@@ -22,7 +22,7 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [userToken, setUserToken] = useState(null);
   const [seconds, setSeconds] = useState(0);
-  const [countdown, setCountdown] = useState(6000);
+  const [countdown, setCountdown] = useState(6);
   const [coords, setCoords] = useState();
 
   const setToken = async (token) => {
@@ -34,23 +34,6 @@ export default function App() {
 
     setUserToken(token);
   };
-
-  //compte a rebour
-  useEffect(() => {
-    const rebour = setInterval(() => {
-      setSeconds((seconds) => seconds + 1);
-      setCountdown((countdown) => countdown - 1);
-
-      console.log(seconds);
-      console.log(countdown);
-
-      if (seconds === 6000) {
-        setCountdown(6000);
-        setSeconds(0);
-        console.log("new question");
-      }
-    }, 1000);
-  }, []);
 
   //déclenche la requete  GetQuestion toute les X minutes
   // useEffect(() => {
@@ -185,7 +168,7 @@ export default function App() {
                       >
                         {() => (
                           <AdventureScreen
-                            setToken={setToken}
+                            userToken={userToken}
                             coords={coords}
                             seconds={seconds}
                           />

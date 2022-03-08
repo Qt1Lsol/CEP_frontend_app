@@ -9,28 +9,51 @@ import {
 } from "react-native";
 
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Interval from "../components/Interval";
-
-function seconds_to_days_hours_mins_secs_str(seconds) {
-  //day, h, m and s
-  var days = Math.floor(seconds / (24 * 60 * 60));
-  seconds -= days * (24 * 60 * 60);
-  var hours = Math.floor(seconds / (60 * 60));
-  seconds -= hours * (60 * 60);
-  var minutes = Math.floor(seconds / 60);
-  seconds -= minutes * 60;
-  return (
-    (0 < days ? days + " day, " : "") + hours + ":" + minutes + ":" + seconds
-  );
-}
+// import GetQuestion from "../components/GetQuestion";
 
 const AdventureScreen = (props) => {
-  const navigation = useNavigation();
-  //   const [coords, setCoords] = useState();
-
   console.log("Adventure screen OK");
 
   console.log("Return coords adventure ==>", props.coords);
+  console.log("Return token adventure ==>", props.userToken);
+
+  const navigation = useNavigation();
+
+  //compte a rebour
+  useEffect(() => {
+    // let count = 0;
+    const getQuestionInterval = setInterval(() => {
+      //requete qui va chercher la question
+
+      try {
+        const fetchData = async () => {
+          console.log("Check filters for query=>", props.coords);
+          console.log("Check token=>", props.userToken);
+
+          const response = await axios.get(
+            // `https://cepbackend.herokuapp.com/question/view?search=${search}`
+            `http://localhost:4000/question/get?coords=${props.coords}`,
+
+            {
+              headers: {
+                Authorization: "Bearer " + props.token,
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+
+          setData(response.data);
+          setIsLoading(false);
+        };
+
+        fetchData();
+      } catch (error) {
+        console.log(error.message);
+      }
+    }, 6);
+  }, []);
 
   return (
     <ImageBackground
@@ -39,8 +62,7 @@ const AdventureScreen = (props) => {
     >
       <View>
         <Text>Welcome to adventure screen</Text>
-        {/* <Interval /> */}
-        <Text>{seconds_to_days_hours_mins_secs_str(props.seconds)}</Text>
+        <Interval />
         <Text>{props.coords.latitude}</Text>
         <Text>{props.coords.longitude}</Text>
         {/* <Image
