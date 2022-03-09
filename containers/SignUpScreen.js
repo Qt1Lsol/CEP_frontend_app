@@ -45,16 +45,17 @@ export default function SignUpScreen({ setUserToken }) {
     console.log("birthdate==>", date);
 
     try {
-      const response = await axios.post("http://localhost:4000/user/signup", {
-        // email: email,
-        // birthdate: date,
-        // password: password,
-        // confirmPassword: confirmPassword,
-        email: "testeee@test.com",
-        birthdate: "",
-        password: "test",
-        confirmPassword: "test",
-      });
+      const response = await axios.post(
+        "http://192.168.1.43:4000/user/signup",
+        {
+          email: email,
+          birthdate: date,
+          password: password,
+          // email: "testeee@test.com",
+          // birthdate: "",
+          // password: "test",
+        }
+      );
 
       // console.log(response);
 
@@ -69,6 +70,7 @@ export default function SignUpScreen({ setUserToken }) {
       //   setErrorMessage("Cet email a déjà un compte chez nous !");
       // }
       console.log("catch=>", error.message);
+      console.log("catch response=>", error.response.data);
     }
   };
 
