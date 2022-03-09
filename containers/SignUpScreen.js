@@ -46,6 +46,7 @@ export default function SignUpScreen({ setUserToken }) {
 
     try {
       const response = await axios.post(
+        // "https://cepbackend.herokuapp.com/user/signup",
         "http://192.168.1.43:4000/user/signup",
         {
           email: email,
@@ -80,8 +81,8 @@ export default function SignUpScreen({ setUserToken }) {
         <Text>Email : </Text>
         <TextInput
           placeholder="email"
-          onChange={(event) => {
-            setEmail(event.target.value);
+          onChangeText={(event) => {
+            setEmail(event);
           }}
         />
 
@@ -114,8 +115,8 @@ export default function SignUpScreen({ setUserToken }) {
         <TextInput
           placeholder="mot de passe"
           secureTextEntry={true}
-          onChange={(event) => {
-            setPassword(event.target.value);
+          onChangeText={(event) => {
+            setPassword(event);
           }}
         />
 
@@ -123,8 +124,8 @@ export default function SignUpScreen({ setUserToken }) {
         <TextInput
           placeholder="confirmer le mot de passe"
           secureTextEntry={true}
-          onChange={(event) => {
-            setConfirmPassword(event.target.value);
+          onChangeText={(event) => {
+            setConfirmPassword(event);
           }}
         />
 
