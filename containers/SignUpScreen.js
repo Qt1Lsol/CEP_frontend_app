@@ -47,7 +47,7 @@ export default function SignUpScreen({ setUserToken }) {
     try {
       const response = await axios.post(
         // "https://cepbackend.herokuapp.com/user/signup",
-        "http://192.168.1.43:4000/user/signup",
+        "http://192.168.1.54:4000/user/signup",
         {
           email: email,
           birthdate: date,

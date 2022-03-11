@@ -13,6 +13,7 @@ import AdventureScreen from "./containers/AdventureScreen";
 import CuriosityScreen from "./containers/CuriosityScreen";
 import SplashScreen from "./containers/SplashScreen";
 // import GetPosition from "./components/GetPosition";
+
 import * as Location from "expo-location";
 
 const Tab = createBottomTabNavigator();

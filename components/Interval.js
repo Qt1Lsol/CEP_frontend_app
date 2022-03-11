@@ -8,14 +8,14 @@ const Interval = () => {
   const [compteur, setCompteur] = useState();
 
   useEffect(() => {
-    let countdown = 6;
+    let countdown = 30;
 
     const interval = setInterval(() => {
       countdown--;
       setCompteur(countdown);
 
       if (countdown === -1) {
-        countdown = 6;
+        countdown = 30;
         setCompteur(countdown);
       }
     }, 1000);
@@ -24,11 +24,9 @@ const Interval = () => {
   }, []);
 
   return (
-    <div className="App">
-      <header className="App-header">
-        {TimeFormat(compteur)} before the next question.
-      </header>
-    </div>
+    <Text className="App">
+      {TimeFormat(compteur)} before the next question.
+    </Text>
   );
 };
 
