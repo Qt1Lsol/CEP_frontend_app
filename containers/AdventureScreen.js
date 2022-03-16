@@ -2,6 +2,7 @@ import { useNavigation } from "@react-navigation/core";
 import {
   StyleSheet,
   ImageBackground,
+  ActivityIndicator,
   Button,
   Text,
   View,
@@ -10,9 +11,13 @@ import {
   Alert,
 } from "react-native";
 
+import { Audio } from "expo-av";
+
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Interval from "../components/Interval";
+// import { Ionicons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const AdventureScreen = (props) => {
   console.log("Adventure screen OK");
@@ -25,13 +30,27 @@ const AdventureScreen = (props) => {
   const [questionRun, setQuestionRun] = useState(false);
   const [userAnswer, setUserAnswer] = useState("user answer");
   const [questionBlock, setQuestionBlock] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [sound, setSound] = useState();
 
-  // const [latitude, setLatitude] = useState("");
-  // const [longitude, setLongitude] = useState("");
+  const [picture1, setPicture1] = useState("test");
+  const [picture2, setPicture2] = useState("test");
+  const [picture3, setPicture3] = useState("test");
 
-  // setLatitude(props.coords.latitude);
-  // setLongitude(props.coords.longitude);
+  function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
+  }
+
+  async function playSound() {
+    console.log("Loading Sound");
+    const { sound } = await Audio.Sound.createAsync({
+      uri: questionBlock.questionNear[0].questionAudio.secure_url,
+    });
+    setSound(sound);
+
+    console.log("Playing sound");
+    await sound.playAsync();
+  }
 
   const navigation = useNavigation();
 
@@ -72,12 +91,60 @@ const AdventureScreen = (props) => {
             if (response.data) {
               //on a une question
               setQuestionBlock(response.data);
+
+              randomNumber = getRandomInt(3);
+
+              console.log("random num test=>", randomNumber);
+
+              console.log(
+                "picture1",
+                questionBlock.questionNear[0].questionPicture.secure_url
+              );
+              console.log(
+                "picture2",
+                questionBlock.questionAlea[0].questionPicture.secure_url
+              );
+              console.log(
+                "picture3",
+                questionBlock.questionAlea[1].questionPicture.secure_url
+              );
+
+              if (randomNumber === 0) {
+                //1xx
+                setPicture1(
+                  questionBlock.questionNear[0].questionPicture.secure_url
+                );
+                setPicture2(
+                  questionBlock.questionAlea[0].questionPicture.secure_url
+                );
+                setPicture3(
+                  questionBlock.questionAlea[1].questionPicture.secure_url
+                );
+              } else if (randomNumber === 1) {
+                //x1x
+                setPicture1(
+                  questionBlock.questionAlea[0].questionPicture.secure_url
+                );
+                setPicture2(
+                  questionBlock.questionNear[0].questionPicture.secure_url
+                );
+                setPicture3(
+                  questionBlock.questionAlea[1].questionPicture.secure_url
+                );
+              } else {
+                //xx1
+                setPicture1(
+                  questionBlock.questionAlea[0].questionPicture.secure_url
+                );
+                setPicture2(
+                  questionBlock.questionAlea[1].questionPicture.secure_url
+                );
+                setPicture3(
+                  questionBlock.questionNear[0].questionPicture.secure_url
+                );
+              }
               setIsLoading(false);
               setQuestionRun(true);
-              // console.log(
-              //   "ALEA++++++++++URL==>",
-              //   questionBlock.questionAlea[0].questionPicture.secure_url
-              // );
             } else {
               // on n'a pas de question
               setQuestionRun(false);
@@ -86,15 +153,35 @@ const AdventureScreen = (props) => {
 
           fetchData();
         } catch (error) {
-          console.log(error.message);
+          console.log("catch=>", error.message);
           setQuestionRun(false);
         }
       } else {
       }
     }, 10000);
+
+    // return () => {
+    //   // Si vous ne le faites pas, vous générez une "fuite de mémoire"
+    //   clearInterval(getQuestionInterval);
+    // };
   }, []);
 
-  return (
+  return isLoading ? (
+    <ImageBackground
+      source={require("../assets/adaptive-icon.png")}
+      style={{ width: "100%", height: "100%" }}
+    >
+      <View style={styles.container}>
+        <Text>Bienvenue dans une nouvelle aventure</Text>
+
+        <Text>En attente de la prochaine question</Text>
+      </View>
+
+      <View style={[styles.container, styles.horizontal]}>
+        <ActivityIndicator size="large" color="#00ff00" />
+      </View>
+    </ImageBackground>
+  ) : (
     <ImageBackground
       source={require("../assets/adaptive-icon.png")}
       style={{ width: "100%", height: "100%" }}
@@ -105,9 +192,19 @@ const AdventureScreen = (props) => {
         <Text>{props.coords.latitude}</Text>
         <Text>{props.coords.longitude}</Text>
 
+        <Text>Picture1 : {picture1}</Text>
+        <Text>Picture2 : {picture2}</Text>
+        <Text>Picture3 : {picture2}</Text>
+
         <Text>{userAnswer}</Text>
 
         <Text>Welcome home!</Text>
+        <MaterialIcons
+          name="hearing"
+          size={64}
+          color="black"
+          onPress={playSound}
+        />
         <Text style={styles.containerImg}>
           <TouchableOpacity
             onPress={() => {
@@ -118,7 +215,7 @@ const AdventureScreen = (props) => {
           >
             <Image
               source={{
-                uri: "data.questionAlea[0].questionPicture.secure_url",
+                uri: picture1,
               }}
               style={styles.image}
             />
@@ -133,7 +230,8 @@ const AdventureScreen = (props) => {
           >
             <Image
               source={{
-                uri: "https://cdn.pixabay.com/photo/2020/05/04/23/06/spring-5131048_960_720.jpg",
+                // uri: questionBlock.questionAlea[0].questionPicture.secure_url,
+                uri: picture2,
               }}
               style={styles.image}
             />
@@ -148,7 +246,8 @@ const AdventureScreen = (props) => {
           >
             <Image
               source={{
-                uri: "https://cdn.pixabay.com/photo/2020/05/04/23/06/spring-5131048_960_720.jpg",
+                // uri: questionBlock.questionAlea[1].questionPicture.secure_url,
+                uri: picture3,
               }}
               style={styles.image}
             />
