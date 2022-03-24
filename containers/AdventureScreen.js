@@ -9,6 +9,7 @@ import {
   Image,
   TouchableOpacity,
   Alert,
+  Linking,
 } from "react-native";
 
 import { Audio } from "expo-av";
@@ -35,7 +36,6 @@ const AdventureScreenDev = (props) => {
   console.log("Return token adventure ==>", props.isCar);
 
   //state
-  const [questionRun, setQuestionRun] = useState(false);
   const [questionBlock, setQuestionBlock] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [picture, setPicture] = useState([]);
@@ -82,8 +82,8 @@ const AdventureScreenDev = (props) => {
       console.log("Check long=>", props.coords.longitude);
 
       const response = await axios.post(
-        // `http://192.168.1.43:4000/question/get`,
-        `https://cepbackend.herokuapp.com/question/get`,
+        `http://192.168.1.43:4000/question/get`,
+        // `https://cepbackend.herokuapp.com/question/get`,
         {
           latitude: props.coords.latitude,
           longitude: props.coords.longitude,
@@ -96,7 +96,7 @@ const AdventureScreenDev = (props) => {
         clearInterval(intervalId1);
         randomQuestion(response.data);
         setIsLoading(false);
-        questionRun(true);
+        console.log(response.data);
       }
     } catch (error) {
       console.log("catch1=>", error.message);
@@ -298,16 +298,23 @@ const AdventureScreenDev = (props) => {
           },
         ]}
       >
-        <Text style={{ fontSize: 14 }}>
-          {questionBlock.questionNear[0].questionPicture.secure_url}
-          {isUserAnswerGood ? "BRAVO !  " : "DOMMAGE !  "}
+        <Text
+          style={{ color: "blue" }}
+          onPress={() =>
+            Linking.openURL(questionBlock.questionNear[0].linkWiki)
+          }
+        >
+          <Entypo name="book" size={48} color="black" />
         </Text>
 
-        <Entypo
-          name={isUserAnswerGood ? "emoji-flirt" : "emoji-sad"}
-          size={48}
-          color={isUserAnswerGood ? "green" : "red"}
-        />
+        <Text
+          style={{ color: "blue" }}
+          onPress={() =>
+            Linking.openURL(questionBlock.questionNear[0].linkPlace)
+          }
+        >
+          <Entypo name="info-with-circle" size={48} color="black" />
+        </Text>
       </View>
 
       <View style={[styles.container]}>
