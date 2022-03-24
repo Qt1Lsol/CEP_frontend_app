@@ -24,15 +24,15 @@ import { MaterialIcons } from "@expo/vector-icons";
 
 import { color } from "react-native/Libraries/Components/View/ReactNativeStyleAttributes";
 import { render } from "react-dom";
+import GoToUrl from "../components/GoToUrl";
 
 const AdventureScreenDev = (props) => {
   const navigation = useNavigation();
 
   console.log("Adventure screen OK");
-  console.log("Return coords ==>", props.coords);
-  // console.log("Return longitude adventure ==>", props.coords.longitude);
+  console.log("Return latitude adventure ==>", props.coords.latitude);
+  console.log("Return longitude adventure ==>", props.coords.longitude);
   console.log("Return token adventure ==>", props.userToken);
-  console.log("Return token adventure ==>", props.isCar);
 
   //state
   const [questionRun, setQuestionRun] = useState(false);
@@ -45,6 +45,11 @@ const AdventureScreenDev = (props) => {
   const [isUserAnswerGood, setIsUserAnswerGood] = useState(null);
   const [sound, setSound] = useState();
 
+  const stopInterval = () => {
+    clearInterval(intervalId);
+    console.log("Terminé");
+  };
+
   const startQuery = () => {
     setIsAnswerVisible(false);
     fetchData();
@@ -52,7 +57,7 @@ const AdventureScreenDev = (props) => {
 
   const startInterval = () => {
     console.log("Go");
-    intervalId1 = setInterval(startQuery, 5000);
+    intervalId = setInterval(startQuery, 5000);
   };
 
   async function playSound() {
@@ -82,21 +87,20 @@ const AdventureScreenDev = (props) => {
       console.log("Check long=>", props.coords.longitude);
 
       const response = await axios.post(
-        // `http://192.168.1.43:4000/question/get`,
-        `https://cepbackend.herokuapp.com/question/get`,
+        `http://192.168.1.43:4000/question/get`,
         {
           latitude: props.coords.latitude,
           longitude: props.coords.longitude,
-          isCar: props.isCar,
         }
       );
 
       if (response.data) {
         // console.log(response.data);
-        clearInterval(intervalId1);
+
         randomQuestion(response.data);
         setIsLoading(false);
-        questionRun(true);
+
+        stopInterval();
       }
     } catch (error) {
       console.log("catch1=>", error.message);
@@ -168,7 +172,6 @@ const AdventureScreenDev = (props) => {
         <Text>latitude:{props.coords.latitude}</Text>
         <Text>longitude:{props.coords.longitude}</Text>
         <Text>isLoading : {isLoading ? "True" : "False"}</Text>
-        <Text>isCar : {props.isCar ? "true" : "false"}</Text>
       </View>
     </ImageBackground>
   ) : (
@@ -184,7 +187,6 @@ const AdventureScreenDev = (props) => {
       <Text>isAnswerVisible : {isAnswerVisible ? "true" : "false"}</Text>
       <Text>goodAnswerNum : {goodAnswerNum} (start at 0)</Text>
       <Text>isLoading : {isLoading ? "true" : "false"}</Text>
-      <Text>isCar : {props.isCar ? "true" : "false"}</Text>
       <Text>_________DEVELOPPEUR_____________________</Text>
 
       <View
@@ -302,7 +304,7 @@ const AdventureScreenDev = (props) => {
           {questionBlock.questionNear[0].questionPicture.secure_url}
           {isUserAnswerGood ? "BRAVO !  " : "DOMMAGE !  "}
         </Text>
-
+        <GoToUrl />
         <Entypo
           name={isUserAnswerGood ? "emoji-flirt" : "emoji-sad"}
           size={48}

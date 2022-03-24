@@ -10,21 +10,35 @@ import SignInScreen from "./containers/SignInScreen";
 import SignUpScreen from "./containers/SignUpScreen";
 import SettingsScreen from "./containers/SettingsScreen";
 import AdventureScreen from "./containers/AdventureScreen";
+import AdventureScreenDev from "./containers/AdventureScreenDev";
+import MapScreen from "./containers/MapScreen";
+import ListScreen from "./containers/ListScreen";
 import CuriosityScreen from "./containers/CuriosityScreen";
 import SplashScreen from "./containers/SplashScreen";
 // import GetPosition from "./components/GetPosition";
 
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import * as Location from "expo-location";
+// import * as TaskManager from "expo-task-manager";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
+// const LOCATION_TRACKING = "location-tracking";
+
 export default function App() {
+  console.log("app.js OK");
+
   const [isLoading, setIsLoading] = useState(true);
   const [userToken, setUserToken] = useState(null);
   const [seconds, setSeconds] = useState(0);
   const [countdown, setCountdown] = useState(6);
   const [coords, setCoords] = useState();
+  // const [askCoords, setAskCoords] = useState("");
+
+  const [isCar, setIsCar] = useState(true);
+
+  //localisation
 
   const setToken = async (token) => {
     if (token) {
@@ -36,54 +50,33 @@ export default function App() {
     setUserToken(token);
   };
 
-  //déclenche la requete  GetQuestion toute les X minutes
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     setCountdown(6000);
-
-  //     console.log("countdown =>", countdown);
-
-  //     if (countdown === 0) {
-  //       setCountdown(6000);
-
-  //       //appeller la requete GetQuestion
-  //     }
-  //   }, 6000);
-  // }, []);
-
   //récupérer la position du téléphone.........................................................
 
   useEffect(() => {
-    const askPermission = async () => {
+    (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
+      console.log("status=>", status);
 
-      console.log("status==>", status);
+      if (status !== "granted") {
+        setErrorMsg("Permission to access location was denied");
+        return;
+      }
 
-      if (status === "granted") {
+      setInterval(async () => {
+        // setIsLoading(true);
         let location = await Location.getCurrentPositionAsync({});
-
         const obj = {
           latitude: location.coords.latitude,
           longitude: location.coords.longitude,
         };
-
-        console.log("coords==>", obj);
-
         setCoords(obj);
-
-        // setCoords(obj);
-        // return obj;
-      } else {
-        setError(true);
-      }
-
-      setIsLoading(false);
-    };
-
-    askPermission();
+        // console.log(coords.latitude);
+        // setIsLoading(false);
+      }, 10000);
+    })();
   }, []);
 
-  //...........................................................................................
+  //..........................................................................................
 
   useEffect(() => {
     // Fetch the token from storage then navigate to our appropriate place
@@ -154,12 +147,18 @@ export default function App() {
                       <Stack.Screen
                         name="Home"
                         options={{
-                          title: "My App",
+                          title: "Culture en Poche",
                           headerStyle: { backgroundColor: "red" },
                           headerTitleStyle: { color: "white" },
                         }}
                       >
-                        {() => <HomeScreen />}
+                        {() => (
+                          <HomeScreen
+                            setIsCar={setIsCar}
+                            isCar={isCar}
+                            coords={coords}
+                          />
+                        )}
                       </Stack.Screen>
 
                       <Stack.Screen
@@ -179,6 +178,54 @@ export default function App() {
                       >
                         {() => (
                           <AdventureScreen
+                            isCar={isCar}
+                            userToken={userToken}
+                            coords={coords}
+                            seconds={seconds}
+                          />
+                        )}
+                      </Stack.Screen>
+
+                      <Stack.Screen
+                        name="AdventureScreenDev"
+                        options={{
+                          title: "AdventureScreenDev",
+                        }}
+                      >
+                        {() => (
+                          <AdventureScreenDev
+                            isCar={isCar}
+                            userToken={userToken}
+                            coords={coords}
+                            seconds={seconds}
+                          />
+                        )}
+                      </Stack.Screen>
+
+                      <Stack.Screen
+                        name="Map"
+                        options={{
+                          title: "Map",
+                        }}
+                      >
+                        {() => (
+                          <MapScreen
+                            userToken={userToken}
+                            coords={coords}
+                            seconds={seconds}
+                            isCar={isCar}
+                          />
+                        )}
+                      </Stack.Screen>
+
+                      <Stack.Screen
+                        name="List"
+                        options={{
+                          title: "List",
+                        }}
+                      >
+                        {() => (
+                          <ListScreen
                             userToken={userToken}
                             coords={coords}
                             seconds={seconds}
